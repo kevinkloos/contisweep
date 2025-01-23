@@ -2,7 +2,7 @@ Package: contisweep
 Title: Prevalence Estimation using Continuous Sweep
 Version: 0.1.0
 Authors@R: 
-    person("Kevin", "Kloos", email = "kevinkloos@hotmail.com", role = c("aut", "cre"), orcid = "0000-0001-6980-4259")
+    person("Kevin", "Kloos", email = "kevinkloos@hotmail.com", role = c("aut", "cre"))
 Description: Implements the Continuous Sweep qunatifier for prevalence estimation. Includes functions to optimize the hyperparameter $p^\Delta$ and to estimate the variance. 
 License: MIT
 Encoding: UTF-8
