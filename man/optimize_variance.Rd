@@ -31,7 +31,7 @@ A list containing:
   \item variance - The estimated variance given optimal pdelta.
   \item pdelta - Optimal pdelta estimate.
   \item barriers - Two decision boundaries.
-  \item ac - An initial adjusted count estimate using AC-MAX.
+  \item ac_max - An initial adjusted count estimate using AC-MAX.
   \item var_type - The type of variance estimate (basic or advanced).
 }
 }

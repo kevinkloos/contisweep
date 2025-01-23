@@ -21,7 +21,7 @@
 #'   \item variance - The estimated variance given optimal pdelta.
 #'   \item pdelta - Optimal pdelta estimate.
 #'   \item barriers - Two decision boundaries.
-#'   \item ac - An initial adjusted count estimate using AC-MAX.
+#'   \item ac_max - An initial adjusted count estimate using AC-MAX.
 #'   \item var_type - The type of variance estimate (basic or advanced).
 #' }
 #' @export
@@ -63,7 +63,7 @@ optimize_variance <- function(tr, te, var_type = "advanced") {
     find_barriers(x, tr) |> find_variance(tr, te, ac_pmax, var_type = "advanced")
   }
 
-  pmin = 0.001
+  pmin <- 0.001
   prevtrain <- tr$prevtrain
   ntrain <- tr$ntrain
   ntest <- length(te)

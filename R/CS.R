@@ -1,9 +1,11 @@
 #' Continuous Sweep Prevalence Estimation
 #' 
 #' Estimates prevalence values using continuous sweep based on:
-#' 1. Training parameters from positive and negative distributions
-#' 2. Test scores from target population
-#' 3. Decision boundaries (barriers) for the area to integrate
+#' \itemize{
+#' \item Training parameters from positive and negative distributions
+#' \item Test scores from target population
+#' \item Decision boundaries (barriers) for the area to integrate
+#' }
 #'
 #' @param tr List containing training parameters:
 #' \itemize{
@@ -17,9 +19,16 @@
 #' @param te Numeric vector of test scores (target population)
 #' @param barriers Two numeric values indicating the left and right point of the area
 #' to be integrated OR a character "basic" or "advanced" to use optimized barriers.
-#' 
-#' @return Preferably a numeric value between 0 and 1 representing estimated prevalence.
-#' 
+#' @param conf_alpha Either FALSE or a numeric value between 0 and 1 indicating the
+#' alpha parameter for the confidence interval.
+#' @return A prevalence estimate or a list containing:
+#' \itemize{
+#'   \item prevalence - Prevalence estimate
+#'   \item variance - Variance estimate
+#'   \item conf_interval - Lower and upper bounds of the confidence interval
+#'   \item conf_alpha - Alpha parameter for the confidence interval
+#'   \item pdelta - Optimal pdelta estimate
+#' }
 #' @examples
 #' # Example training parameters
 #' tr <- list(mup = 1, omegap = 1, mun = 0, omegan = 0.5, ntrain = 1000, prevtrain = 0.7)
@@ -41,7 +50,7 @@
 #' @importFrom utils head tail
 #' @importFrom stats integrate
 #' @importFrom purrr pmap_dbl
-CS <- function(tr, te, barriers) {
+CS <- function(tr, te, barriers = "advanced", conf_alpha = FALSE) {
 
   .calculate_one_area <- function(cac, thetal, thetar, mup, sdp, mun, sdn) {
     Fp <- function(q) stats::pnorm(q, mup, sdp, lower.tail = FALSE)
@@ -56,11 +65,17 @@ CS <- function(tr, te, barriers) {
   }
   n_obs <- length(te)
   
+  if(conf_alpha <= 0 || conf_alpha >= 1) {
+    stop("conf_alpha must be FALSE or a numeric value between 0 and 1.")
+  }
+  
   if(barriers == "basic") {
-    barriers <- optimize_variance(tr, te, var_type = "basic")$barriers
+    opt_var <- optimize_variance(tr, te, var_type = "basic")
+    barriers <- opt_var$barriers
   }
   else if(barriers == "advanced") {
-    barriers <- optimize_variance(tr, te, var_type = "advanced")$barriers
+    opt_var <- optimize_variance(tr, te, var_type = "advanced")
+    barriers <- opt_var$barriers
   }
   
   stopifnot(length(barriers) == 2)
@@ -96,5 +111,15 @@ CS <- function(tr, te, barriers) {
   area_sum <- sum(all_areas)
   out <- area_sum / (thetar - thetal)
   if(out > 1 | out < 0) {warning("Estimated prevalence outside 0-1.")}
+  
+  if(conf_alpha) {
+    vari <- find_variance(barriers, tr, te, out, "advanced")
+    out <- list(prevalence = out, 
+                variance = vari,
+                conf_interval = c(out - qnorm(1 - conf_alpha/2) * sqrt(vari),
+                                  out + qnorm(1 - conf_alpha/2) * sqrt(vari)),
+                conf_alpha = conf_alpha,
+                pdelta = opt_var$pdelta)
+  }
   return(out)
 }

@@ -4,7 +4,7 @@
 \alias{CS}
 \title{Continuous Sweep Prevalence Estimation}
 \usage{
-CS(tr, te, barriers)
+CS(tr, te, barriers = "advanced", conf_alpha = FALSE)
 }
 \arguments{
 \item{tr}{List containing training parameters:
@@ -20,16 +20,28 @@ CS(tr, te, barriers)
 \item{te}{Numeric vector of test scores (target population)}
 
 \item{barriers}{Two numeric values indicating the left and right point of the area
-to be integrated}
+to be integrated OR a character "basic" or "advanced" to use optimized barriers.}
+
+\item{conf_alpha}{Either FALSE or a numeric value between 0 and 1 indicating the
+alpha parameter for the confidence interval.}
 }
 \value{
-Preferably a numeric value between 0 and 1 representing estimated prevalence.
+A prevalence estimate or a list containing:
+\itemize{
+  \item prevalence - Prevalence estimate
+  \item variance - Variance estimate
+  \item conf_interval - Lower and upper bounds of the confidence interval
+  \item conf_alpha - Alpha parameter for the confidence interval
+  \item pdelta - Optimal pdelta estimate
+}
 }
 \description{
 Estimates prevalence values using continuous sweep based on:
-1. Training parameters from positive and negative distributions
-2. Test scores from target population
-3. Decision boundaries (barriers) for the area to integrate
+\itemize{
+\item Training parameters from positive and negative distributions
+\item Test scores from target population
+\item Decision boundaries (barriers) for the area to integrate
+}
 }
 \examples{
 # Example training parameters
@@ -40,7 +52,8 @@ te <- c(rnorm(500, mean = tr$mup, sd = sqrt(tr$omegap)),
         rnorm(500, mean = tr$mun, sd = sqrt(tr$omegan)))
 
 # Calculate prevalence estimate
-CS(tr, te, barriers = c(-3, 3))
+CS(tr, te, barriers = c(-1, 1))
+CS(tr, te, barriers = "advanced")
 
 }
 \references{
