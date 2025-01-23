@@ -1,12 +1,19 @@
 Package: contisweep
-Title: Prevalence Estimation using Continuous Sweep
+Title: Continuous Sweep Prevalence Estimation
 Version: 0.1.0
 Authors@R: 
-    person("Kevin", "Kloos", email = "kevinkloos@hotmail.com", role = c("aut", "cre"))
-Description: Implements the Continuous Sweep qunatifier for prevalence estimation. Includes functions to optimize the hyperparameter $p^\Delta$ and to estimate the variance. 
+    person(given = "Kevin",
+           family = "Kloos",
+           email = "kevinkloos@hotmail.com",
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-6980-4259"))
+Description: Implements the Continuous Sweep quantifier for prevalence estimation with uncertainty quantification. Provides functions for:
+    - Optimal hyperparameter selection (pdelta) using grid search.
+    - Variance estimation via basic and advanced variance equations.
+    - Confidence interval calculation.
 License: MIT
 Encoding: UTF-8
-Language: en
+Language: en-US
 Imports:
     purrr,
     stats,
@@ -14,6 +21,11 @@ Imports:
     rootSolve,
     pracma,
     dplyr
-RoxygenNote: 7.3.2
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
+    ggplot2
 URL: https://github.com/kevinkloos/contisweep
 BugReports: https://github.com/kevinkloos/contisweep/issues
+RoxygenNote: 7.3.2
