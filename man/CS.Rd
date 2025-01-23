@@ -53,7 +53,7 @@ te <- c(rnorm(500, mean = tr$mup, sd = sqrt(tr$omegap)),
 
 # Calculate prevalence estimate
 CS(tr, te, barriers = c(-1, 1))
-CS(tr, te, barriers = "advanced")
+CS(tr, te, barriers = "advanced", conf_int = 0.95)
 
 }
 \references{

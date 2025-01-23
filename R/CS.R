@@ -39,7 +39,7 @@
 #' 
 #' # Calculate prevalence estimate
 #' CS(tr, te, barriers = c(-1, 1))
-#' CS(tr, te, barriers = "advanced")
+#' CS(tr, te, barriers = "advanced", conf_int = 0.95)
 #' 
 #' @references
 #' Method implemented in Advanced Variance Estimation for Continuous Sweep.
@@ -64,18 +64,20 @@ CS <- function(tr, te, barriers = "advanced", conf_alpha = FALSE) {
     stats::integrate(function(x) (cac - Fn(x))/(Fp(x) - Fn(x)), thetal, thetar)$value
   }
   n_obs <- length(te)
+  bar_char <- is.character(barriers)
   
-  if(conf_alpha <= 0 || conf_alpha >= 1) {
+  if(!isFALSE(conf_alpha) && (conf_alpha <= 0 || conf_alpha >= 1)) {
     stop("conf_alpha must be FALSE or a numeric value between 0 and 1.")
   }
-  
-  if(barriers == "basic") {
-    opt_var <- optimize_variance(tr, te, var_type = "basic")
-    barriers <- opt_var$barriers
-  }
-  else if(barriers == "advanced") {
-    opt_var <- optimize_variance(tr, te, var_type = "advanced")
-    barriers <- opt_var$barriers
+  if(is.character(barriers)) {
+    if(barriers == "basic") {
+      opt_var <- optimize_variance(tr, te, var_type = "basic")
+      barriers <- opt_var$barriers
+    }
+    else if(barriers == "advanced") {
+      opt_var <- optimize_variance(tr, te, var_type = "advanced")
+      barriers <- opt_var$barriers
+    }
   }
   
   stopifnot(length(barriers) == 2)
@@ -118,8 +120,10 @@ CS <- function(tr, te, barriers = "advanced", conf_alpha = FALSE) {
                 variance = vari,
                 conf_interval = c(out - qnorm(1 - conf_alpha/2) * sqrt(vari),
                                   out + qnorm(1 - conf_alpha/2) * sqrt(vari)),
-                conf_alpha = conf_alpha,
-                pdelta = opt_var$pdelta)
+                conf_alpha = conf_alpha)
+    if(bar_char) {
+      out$pdelta <- opt_var$pdelta
+    }
   }
   return(out)
 }
