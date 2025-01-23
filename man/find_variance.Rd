@@ -24,7 +24,7 @@ find_variance(barriers, tr, te, prev = ac_pmax, var_type = "advanced")
 \item{prev}{Initial estimate of the prevalence, preferably from adjusted count.}
 
 \item{var_type}{The type of variance estimate:
-\itemise{
+\itemize{
   \item basic - assumes training parameters Fp and Fn as known.
   \item advanced - assumes training parameters Fp and Fn as estimated.
 }}

@@ -20,7 +20,7 @@ optimize_variance(tr, te, var_type = "advanced")
 \item{te}{Numeric vector of test scores (target population)}
 
 \item{var_type}{The type of variance estimate:
-\itemise{
+\itemize{
   \item basic - assumes training parameters Fp and Fn as known.
   \item advanced - assumes training parameters Fp and Fn as estimated.
 }}
