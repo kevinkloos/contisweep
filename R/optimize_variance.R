@@ -68,7 +68,7 @@ optimize_variance <- function(tr, te, var_type = "advanced") {
   ntrain <- tr$ntrain
   ntest <- length(te)
 
-  lft <- tr$mun + sqrt(tr$omegap) * stats::norm(pmin)
+  lft <- tr$mun + sqrt(tr$omegap) * stats::qnorm(pmin)
   rgt <- tr$mup + sqrt(tr$omegan) * stats::qnorm(1 - pmin)
 
   ppoint <- stats::optimize(Fdiff, lower = lft, upper = rgt, maximum = TRUE)

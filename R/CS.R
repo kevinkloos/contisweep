@@ -16,7 +16,7 @@
 #' }
 #' @param te Numeric vector of test scores (target population)
 #' @param barriers Two numeric values indicating the left and right point of the area
-#' to be integrated
+#' to be integrated OR a character "basic" or "advanced" to use optimized barriers.
 #' 
 #' @return Preferably a numeric value between 0 and 1 representing estimated prevalence.
 #' 
@@ -29,8 +29,9 @@
 #'         rnorm(500, mean = tr$mun, sd = sqrt(tr$omegan)))
 #' 
 #' # Calculate prevalence estimate
-#' CS(tr, te, barriers = c(-3, 3))
-#'
+#' CS(tr, te, barriers = c(-1, 1))
+#' CS(tr, te, barriers = "advanced")
+#' 
 #' @references
 #' Method implemented in Advanced Variance Estimation for Continuous Sweep.
 #' 
@@ -42,10 +43,6 @@
 #' @importFrom purrr pmap_dbl
 CS <- function(tr, te, barriers) {
 
-  stopifnot(length(barriers) == 2)
-  stopifnot(all(!is.na(barriers)))
-  stopifnot(is.numeric(barriers))
-
   .calculate_one_area <- function(cac, thetal, thetar, mup, sdp, mun, sdn) {
     Fp <- function(q) stats::pnorm(q, mup, sdp, lower.tail = FALSE)
     Fn <- function(q) stats::pnorm(q, mun, sdn, lower.tail = FALSE)
@@ -53,10 +50,23 @@ CS <- function(tr, te, barriers) {
     if (dplyr::near(thetal, thetar)) {return(0)}
     if (dplyr::near(Fp(thetal), Fn(thetal))) {return(Inf)}
     if (dplyr::near(Fp(thetar), Fn(thetar))) {return(Inf)}
+    if (sign(Fp(thetal) - Fn(thetal)) != sign(Fp(thetar) - Fn(thetar))) {return(Inf)}
     
     stats::integrate(function(x) (cac - Fn(x))/(Fp(x) - Fn(x)), thetal, thetar)$value
   }
   n_obs <- length(te)
+  
+  if(barriers == "basic") {
+    barriers <- optimize_variance(tr, te, var_type = "basic")$barriers
+  }
+  else if(barriers == "advanced") {
+    barriers <- optimize_variance(tr, te, var_type = "advanced")$barriers
+  }
+  
+  stopifnot(length(barriers) == 2)
+  stopifnot(all(!is.na(barriers)))
+  stopifnot(is.numeric(barriers))
+  
   thetal <- barriers[1]
   thetar <- barriers[2]
   
