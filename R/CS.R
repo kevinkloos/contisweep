@@ -39,7 +39,7 @@
 #' 
 #' # Calculate prevalence estimate
 #' CS(tr, te, barriers = c(-1, 1))
-#' CS(tr, te, barriers = "advanced", conf_int = 0.95)
+#' CS(tr, te, barriers = "advanced", conf_alpha = 0.95)
 #' 
 #' @references
 #' Method implemented in Advanced Variance Estimation for Continuous Sweep.
