@@ -1,0 +1,21 @@
+# R artifacts
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.tar.gz
+
+# Build artifacts
+Meta/
+doc/
+.Rcheck/
+
+# Vignettes
+inst/doc
+
+# Test coverage
+coverage.*
+.Rdata
+.httr-oauth
+.DS_Store
+.quarto
