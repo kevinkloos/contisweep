@@ -21,6 +21,7 @@
 #' to be integrated OR a character "basic" or "advanced" to use optimized barriers.
 #' @param conf_alpha Either FALSE or a numeric value between 0 and 1 indicating the
 #' alpha parameter for the confidence interval.
+#' @param print_output Boolean indicating whether to print nicely formatted output.
 #' @return A prevalence estimate or a list containing:
 #' \itemize{
 #'   \item prevalence - Prevalence estimate
@@ -50,7 +51,7 @@
 #' @importFrom utils head tail
 #' @importFrom stats integrate
 #' @importFrom purrr pmap_dbl
-CS <- function(tr, te, barriers = "advanced", conf_alpha = FALSE) {
+CS <- function(tr, te, barriers = "advanced", conf_alpha = FALSE, print_output = TRUE) {
 
   .calculate_one_area <- function(cac, thetal, thetar, mup, sdp, mun, sdn) {
     Fp <- function(q) stats::pnorm(q, mup, sdp, lower.tail = FALSE)
@@ -123,25 +124,37 @@ CS <- function(tr, te, barriers = "advanced", conf_alpha = FALSE) {
                 conf_alpha = conf_alpha)
     if(bar_char) {
       out$pdelta <- opt_var$pdelta
-      cat(paste("\U03B1-CS = ", round(out$prevalence, 3), "; ",
-                round(100 * out$conf_alpha, 3), 
-                "% CI:[", round(out$conf_interval[1], 3), "-", 
-                round(out$conf_interval[2], 3), "]", ". \n\U03c9 = ",
-                signif(out$variance, 3), "; p\U0394 = ", signif(out$pdelta, 3), 
-                ". \n",
-                sep = ""))
-    }
+      if(print_output) {
+        cat(paste("\U03B1-CS = ", round(out$prevalence, 3), "; ",
+                  round(100 * out$conf_alpha, 3), 
+                  "% CI:[", round(out$conf_interval[1], 3), "-", 
+                  round(out$conf_interval[2], 3), "]", ". \n\U03c9 = ",
+                  signif(out$variance, 3), "; p\U0394 = ", signif(out$pdelta, 3), 
+                  ". \n",
+                  sep = ""))
+      }
+      }
     else{
-      cat(paste("\U03B1-CS = ", round(out$prevalence, 3), "; ", 
-                round(100 * out$conf_alpha, 3), 
-                "% CI:[", round(out$conf_interval[1], 3), "-", 
-                round(out$conf_interval[2], 3), "]", ". \n\U03c9 = ",
-                signif(out$variance, 3), ". \n",
-                sep = ""))
+      if(print_output) {
+        cat(paste("\U03B1-CS = ", round(out$prevalence, 3), "; ", 
+                  round(100 * out$conf_alpha, 3), 
+                  "% CI:[", round(out$conf_interval[1], 3), "-", 
+                  round(out$conf_interval[2], 3), "]", ". \n\U03c9 = ",
+                  signif(out$variance, 3), ". \n",
+                  sep = ""))
+      }
     }
   }
   else{
-    cat(paste("\U03B1-CS = ", round(out, 3), ".", sep = "."))
+    if(print_output) {
+      cat(paste("\U03B1-CS = ", round(out, 3), ".", sep = "."))
+    }
   }
-  return(invisible(out))
+  
+  if(print_output) {
+    invisible(out)
+  }
+  else{
+    return(out)
+  }
 }

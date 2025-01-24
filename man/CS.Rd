@@ -4,7 +4,7 @@
 \alias{CS}
 \title{Continuous Sweep Prevalence Estimation}
 \usage{
-CS(tr, te, barriers = "advanced", conf_alpha = FALSE)
+CS(tr, te, barriers = "advanced", conf_alpha = FALSE, print_output = TRUE)
 }
 \arguments{
 \item{tr}{List containing training parameters:
@@ -24,6 +24,8 @@ to be integrated OR a character "basic" or "advanced" to use optimized barriers.
 
 \item{conf_alpha}{Either FALSE or a numeric value between 0 and 1 indicating the
 alpha parameter for the confidence interval.}
+
+\item{print_output}{Boolean indicating whether to print nicely formatted output.}
 }
 \value{
 A prevalence estimate or a list containing:
