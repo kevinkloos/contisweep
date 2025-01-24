@@ -1,6 +1,6 @@
 Package: contisweep
 Title: Continuous Sweep Prevalence Estimation
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person(given = "Kevin",
            family = "Kloos",
