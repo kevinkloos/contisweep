@@ -118,12 +118,30 @@ CS <- function(tr, te, barriers = "advanced", conf_alpha = FALSE) {
     vari <- find_variance(barriers, tr, te, out, "advanced")
     out <- list(prevalence = out, 
                 variance = vari,
-                conf_interval = c(out - qnorm(1 - conf_alpha/2) * sqrt(vari),
-                                  out + qnorm(1 - conf_alpha/2) * sqrt(vari)),
+                conf_interval = c(out + qnorm((1 - conf_alpha)/2) * sqrt(vari),
+                                  out + qnorm(1 - (1 - conf_alpha)/2) * sqrt(vari)),
                 conf_alpha = conf_alpha)
     if(bar_char) {
       out$pdelta <- opt_var$pdelta
+      cat(paste("\U03B1-CS = ", round(out$prevalence, 3), "; ",
+                round(100 * out$conf_alpha, 3), 
+                "% CI:[", round(out$conf_interval[1], 3), "-", 
+                round(out$conf_interval[2], 3), "]", ". \n\U03c9 = ",
+                signif(out$variance, 3), "; p\U0394 = ", signif(out$pdelta, 3), 
+                ". \n",
+                sep = ""))
+    }
+    else{
+      cat(paste("\U03B1-CS = ", round(out$prevalence, 3), "; ", 
+                round(100 * out$conf_alpha, 3), 
+                "% CI:[", round(out$conf_interval[1], 3), "-", 
+                round(out$conf_interval[2], 3), "]", ". \n\U03c9 = ",
+                signif(out$variance, 3), ". \n",
+                sep = ""))
     }
   }
-  return(out)
+  else{
+    cat(paste("\U03B1-CS = ", round(out, 3), ".", sep = "."))
+  }
+  return(invisible(out))
 }
