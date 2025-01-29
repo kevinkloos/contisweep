@@ -79,7 +79,7 @@ CS <- function(tr, te, barriers = "advanced", conf_alpha = FALSE, print_output =
   if (!isFALSE(conf_alpha) && (conf_alpha <= 0 || conf_alpha >= 1)) {
     stop("conf_alpha must be FALSE or a numeric value between 0 and 1.")
   }
-  if (bar_char)) {
+  if (bar_char) {
     opt_var <- optimize_variance(tr, te, var_type = barriers)
     barriers <- opt_var$barriers
   }
